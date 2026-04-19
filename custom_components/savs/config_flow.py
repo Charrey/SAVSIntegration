@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_EMAIL
+from homeassistant.const import CONF_PASSWORD, CONF_EMAIL, CONF_TOKEN
 from homeassistant.helpers import selector
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.loader import async_get_loaded_integration
@@ -39,7 +39,7 @@ class SavsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 if not self._is_valid_email(email):
                     _errors["base"] = "invalid_email"
                 else:
-                    await self._test_credentials(
+                    access_token = await self._test_credentials(
                         email=email,
                         password=user_input[CONF_PASSWORD],
                     )
@@ -51,7 +51,7 @@ class SavsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
                     return self.async_create_entry(
                         title=email,
-                        data={**user_input, CONF_EMAIL: email},
+                        data={**user_input, CONF_EMAIL: email, CONF_TOKEN: access_token},
                     )
 
             except SavsApiClientAuthenticationError as exception:
@@ -99,11 +99,11 @@ class SavsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         return re.match(pattern, email) is not None
 
-    async def _test_credentials(self, email: str, password: str) -> None:
-        """Validate credentials."""
+    async def _test_credentials(self, email: str, password: str) -> str:
+        """Validate credentials and return the access token."""
         client = SavsApiClient(
             email=email,
             password=password,
             session=async_create_clientsession(self.hass),
         )
-        await client.test_credentials()
+        return await client.test_credentials()

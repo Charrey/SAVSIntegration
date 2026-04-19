@@ -1,13 +1,17 @@
-"""Sample API Client."""
-
+"""Savs API Client."""
 from __future__ import annotations
 
+import hashlib
+import hmac
+import logging
 import socket
 import time
 from typing import Any
 
 import aiohttp
 import async_timeout
+
+from .const import LOGGER
 
 
 class SavsApiClientError(Exception):
@@ -38,32 +42,47 @@ class SavsApiClient:
         email: str,
         password: str,
         session: aiohttp.ClientSession,
+        access_token: str | None = None,
     ) -> None:
         """SAVS API Client."""
         self._email = email
         self._password = password
         self._session = session
-        self._access_token = None
+        self._access_token = access_token
+        self._username_cache: str | None = None
 
-    async def test_credentials(self) -> Any:
-        """Get data from the API."""
-        # todo try to login
-        return False
+    async def test_credentials(self) -> str:
+        """
+        Validate credentials by performing the full login flow.
+        Returns the access token if successful.
+        """
+        try:
+            self._username_cache = await self.get_user_list(self._email)
+            salt_data = await self.get_salt_and_random(self._username_cache)
+            hashed_password = self._hash_password(
+                self._password,
+                salt_data["salt"],
+                salt_data["random"]
+            )
+            access_token = await self.login(self._username_cache, hashed_password)
+            if not access_token:
+                raise SavsApiClientAuthenticationError("No access token received")
+            self._access_token = access_token
+            return access_token
+
+        except SavsApiClientAuthenticationError:
+            raise
+        except SavsApiClientCommunicationError:
+            raise
+        except Exception as err:
+            LOGGER.exception("Unexpected error during validation")
+            raise SavsApiClientError(f"Unexpected error during validation: {err}") from err
 
     async def async_get_data(self) -> Any:
         """Get data from the API."""
         return await self._api_wrapper(
             method="get",
             url="https://jsonplaceholder.typicode.com/posts/1",
-        )
-
-    async def async_set_title(self, value: str) -> Any:
-        """Get data from the API."""
-        return await self._api_wrapper(
-            method="patch",
-            url="https://jsonplaceholder.typicode.com/posts/1",
-            data={"title": value},
-            headers={"Content-type": "application/json; charset=UTF-8"},
         )
 
     def _get_common_headers(self) -> dict[str, str]:
@@ -92,6 +111,19 @@ class SavsApiClient:
         if not response.get("success") or response.get("code") != "0":
             msg = f"API request failed: {response.get('errMsg', 'Unknown error')}"
             raise SavsApiClientError(msg)
+
+    def _hash_password(self, password: str, salt: str, random: str) -> str:
+        inner_hash = hmac.new(
+            key=salt.encode("utf-8"),
+            msg=password.encode("utf-8"),
+            digestmod=hashlib.md5,
+        ).hexdigest()
+        final_hash = hmac.new(
+            key=random.encode("utf-8"),
+            msg=inner_hash.encode("utf-8"),
+            digestmod=hashlib.md5,
+        ).hexdigest()
+        return final_hash
 
     async def get_user_list(self, param: str) -> str:
         """Get user list from the API and return the username."""
@@ -203,15 +235,39 @@ class SavsApiClient:
                 msg = "Access token field is missing in response data"
                 raise SavsApiClientError(msg)
 
-            # Save the access token for future use
-            self._access_token = access_token
-
             return access_token
 
         except SavsApiClientError:
             raise
         except Exception as exception:
             msg = f"IO error during login - {exception}"
+            raise SavsApiClientCommunicationError(msg) from exception
+
+    async def async_get_devices(self) -> list[dict[str, Any]]:
+        """Fetch list of devices from the API."""
+        try:
+            data = {
+                "roomId": "0",
+                "pageNum": 1,
+                "pageSize": 100
+            }
+
+            response = await self._api_wrapper(
+                method="post",
+                url="https://global.wisualarm.com/gateway/consumerDevice/api/device/page",
+                data=data,
+                headers=self._get_common_headers(),
+            )
+
+            self._validate_response(response)
+            page_data = response.get("data", {}).get("pageData", [])
+
+            return page_data
+
+        except SavsApiClientError:
+            raise
+        except Exception as exception:
+            msg = f"Error fetching devices - {exception}"
             raise SavsApiClientCommunicationError(msg) from exception
 
     async def _api_wrapper(
@@ -221,30 +277,47 @@ class SavsApiClient:
         data: dict | None = None,
         headers: dict | None = None,
     ) -> Any:
-        """Get information from the API."""
-        try:
-            async with async_timeout.timeout(10):
-                response = await self._session.request(
-                    method=method,
-                    url=url,
-                    headers=headers,
-                    json=data,
-                )
-                _verify_response_or_raise(response)
-                return await response.json()
+        """Get information from the API with automatic token refresh."""
 
-        except TimeoutError as exception:
-            msg = f"Timeout error fetching information - {exception}"
-            raise SavsApiClientCommunicationError(
-                msg,
-            ) from exception
-        except (aiohttp.ClientError, socket.gaierror) as exception:
-            msg = f"Error fetching information - {exception}"
-            raise SavsApiClientCommunicationError(
-                msg,
-            ) from exception
-        except Exception as exception:  # pylint: disable=broad-except
-            msg = f"Something really wrong happened! - {exception}"
-            raise SavsApiClientError(
-                msg,
-            ) from exception
+        # Logic to attempt request twice (original + retry after refresh)
+        for attempt in range(2):
+            request_headers = headers.copy() if headers else {}
+            if not headers:
+                request_headers.update(self._get_common_headers())
+            if self._access_token:
+                request_headers["Authorization"] = f"Bearer {self._access_token}"
+            try:
+                async with async_timeout.timeout(10):
+                    response = await self._session.request(
+                        method=method,
+                        url=url,
+                        headers=request_headers,
+                        json=data,
+                    )
+                    payload = await response.json()
+                    if response.status in (401, 403):
+                        raise SavsApiClientAuthenticationError("Invalid credentials or token expired")
+                    if response.status == 200:
+                        self._validate_response(payload)
+                    return payload
+
+            except TimeoutError as exception:
+                msg = f"Timeout error fetching information - {exception}"
+                raise SavsApiClientCommunicationError(msg) from exception
+            except (aiohttp.ClientError, socket.gaierror) as exception:
+                msg = f"Error fetching information - {exception}"
+                raise SavsApiClientCommunicationError(msg) from exception
+            except SavsApiClientAuthenticationError as exception:
+                # If we get a 401/403 error on the first attempt, try to refresh token
+                if attempt == 0 and self._email and self._password:
+                    LOGGER.info("Authentication failed (401/403), attempting token refresh...")
+                    await self.test_credentials()
+                    continue
+                else:
+                    # If we already retried or have no credentials to refresh, raise error
+                    msg = f"Authentication failed after refresh - {exception}"
+                    raise SavsApiClientAuthenticationError(msg) from exception
+
+            except Exception as exception:  # pylint: disable=broad-except
+                msg = f"Something really wrong happened! - {exception}"
+                raise SavsApiClientError(msg) from exception
