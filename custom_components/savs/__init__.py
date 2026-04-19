@@ -16,7 +16,7 @@ from homeassistant.loader import async_get_loaded_integration
 
 from .api import SavsApiClient
 from .const import DOMAIN, LOGGER
-from .coordinator import BlueprintDataUpdateCoordinator
+from .coordinator import SavsDataUpdateCoordinator
 from .data import SavsData
 
 if TYPE_CHECKING:
@@ -37,7 +37,7 @@ async def async_setup_entry(
     entry: SavsConfigEntry,
 ) -> bool:
     """Set up this integration using UI."""
-    coordinator = BlueprintDataUpdateCoordinator(
+    coordinator = SavsDataUpdateCoordinator(
         hass=hass,
         logger=LOGGER,
         name=DOMAIN,

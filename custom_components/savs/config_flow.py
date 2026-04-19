@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_EMAIL
@@ -19,8 +20,8 @@ from .api import (
 from .const import DOMAIN, LOGGER
 
 
-class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow for Blueprint."""
+class SavsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+    """Config flow for Savs."""
 
     VERSION = 1
 
@@ -32,10 +33,27 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         _errors = {}
         if user_input is not None:
             try:
-                await self._test_credentials(
-                    email=user_input[CONF_EMAIL],
-                    password=user_input[CONF_PASSWORD],
-                )
+                email = user_input[CONF_EMAIL].lower()
+
+                # Validate email format
+                if not self._is_valid_email(email):
+                    _errors["base"] = "invalid_email"
+                else:
+                    await self._test_credentials(
+                        email=email,
+                        password=user_input[CONF_PASSWORD],
+                    )
+
+                    await self.async_set_unique_id(
+                        unique_id=slugify(email)
+                    )
+                    self._abort_if_unique_id_configured()
+
+                    return self.async_create_entry(
+                        title=email,
+                        data={**user_input, CONF_EMAIL: email},
+                    )
+
             except SavsApiClientAuthenticationError as exception:
                 LOGGER.warning(exception)
                 _errors["base"] = "auth"
@@ -45,18 +63,6 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             except SavsApiClientError as exception:
                 LOGGER.exception(exception)
                 _errors["base"] = "unknown"
-            else:
-                await self.async_set_unique_id(
-                    ## Do NOT use this in production code
-                    ## The unique_id should never be something that can change
-                    ## https://developers.home-assistant.io/docs/config_entries_config_flow_handler#unique-ids
-                    unique_id=slugify(user_input[CONF_EMAIL])
-                )
-                self._abort_if_unique_id_configured()
-                return self.async_create_entry(
-                    title=user_input[CONF_EMAIL],
-                    data=user_input,
-                )
 
         integration = async_get_loaded_integration(self.hass, DOMAIN)
         assert integration.documentation is not None, (  # noqa: S101
@@ -88,9 +94,12 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors=_errors,
         )
 
-    async def _test_credentials(self, email: str, password: str) -> None:
-        #todo check whether email is valid email address
+    def _is_valid_email(self, email: str) -> bool:
+        """Validate email format using regex."""
+        pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        return re.match(pattern, email) is not None
 
+    async def _test_credentials(self, email: str, password: str) -> None:
         """Validate credentials."""
         client = SavsApiClient(
             email=email,

@@ -4,7 +4,7 @@
             "user": {
                 "description": "Please setup your SAVS account, link your devices to it and then enter your credentials here. If you need help with the configuration have a look here: {documentation_url}",
                 "data": {
-                    "username": "Email address",
+                    "email": "Email address",
                     "password": "Password"
                 }
             }
@@ -12,6 +12,7 @@
         "error": {
             "auth": "Email/Password is wrong.",
             "connection": "Unable to connect to the server.",
+            "invalid_email": "Invalid email address.",
             "unknown": "Unknown error occurred."
         },
         "abort": {

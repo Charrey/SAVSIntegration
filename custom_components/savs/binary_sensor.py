@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-    from .coordinator import BlueprintDataUpdateCoordinator
+    from .coordinator import SavsDataUpdateCoordinator
     from .data import SavsConfigEntry
 
 ENTITY_DESCRIPTIONS = (
@@ -48,7 +48,7 @@ class SavsBinarySensor(SavsEntity, BinarySensorEntity):
 
     def __init__(
         self,
-        coordinator: BlueprintDataUpdateCoordinator,
+        coordinator: SavsDataUpdateCoordinator,
         entity_description: BinarySensorEntityDescription,
     ) -> None:
         """Initialize the binary_sensor class."""
