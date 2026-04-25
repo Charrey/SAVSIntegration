@@ -4,6 +4,7 @@
   "codeowners": [
     "@charrey"
   ],
+  "dependencies": ["http"],
   "config_flow": true,
   "documentation": "https://github.com/Charrey/SAVSIntegration",
   "iot_class": "cloud_polling",
