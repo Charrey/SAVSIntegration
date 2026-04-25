@@ -29,11 +29,10 @@ if TYPE_CHECKING:
     from .data import SavsConfigEntry
 
 
-PLATFORMS: list[Platform] = [
-    Platform.SENSOR
-]
+PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+
 
 async def async_setup(hass: HomeAssistant, _config: ConfigType) -> bool:
     """Set up the SAVS component and register static assets."""
