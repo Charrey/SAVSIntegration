@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 import trio
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_TOKEN, Platform
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.loader import async_get_loaded_integration
 
@@ -29,11 +30,10 @@ if TYPE_CHECKING:
 
 
 PLATFORMS: list[Platform] = [
-    Platform.SENSOR  # ,
-    # Platform.BINARY_SENSOR,
-    # Platform.SWITCH,
+    Platform.SENSOR
 ]
 
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 async def async_setup(hass: HomeAssistant, _config: ConfigType) -> bool:
     """Set up the SAVS component and register static assets."""
