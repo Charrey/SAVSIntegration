@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import re
+
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_EMAIL, CONF_TOKEN
+from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_TOKEN
 from homeassistant.helpers import selector
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.loader import async_get_loaded_integration
@@ -44,14 +45,16 @@ class SavsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                         password=user_input[CONF_PASSWORD],
                     )
 
-                    await self.async_set_unique_id(
-                        unique_id=slugify(email)
-                    )
+                    await self.async_set_unique_id(unique_id=slugify(email))
                     self._abort_if_unique_id_configured()
 
                     return self.async_create_entry(
                         title=email,
-                        data={**user_input, CONF_EMAIL: email, CONF_TOKEN: access_token},
+                        data={
+                            **user_input,
+                            CONF_EMAIL: email,
+                            CONF_TOKEN: access_token,
+                        },
                     )
 
             except SavsApiClientAuthenticationError as exception:

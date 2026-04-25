@@ -7,15 +7,14 @@ https://github.com/Charrey/SAVSIntegration
 
 from __future__ import annotations
 
-import os
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
-from homeassistant.const import CONF_PASSWORD, CONF_EMAIL, CONF_TOKEN, Platform
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.typing import ConfigType
-from homeassistant.loader import async_get_loaded_integration
+import trio
 from homeassistant.components.http import StaticPathConfig
+from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_TOKEN, Platform
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.loader import async_get_loaded_integration
 
 from .api import SavsApiClient
 from .const import DOMAIN, LOGGER
@@ -24,29 +23,27 @@ from .data import SavsData
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.typing import ConfigType
 
     from .data import SavsConfigEntry
 
+
 PLATFORMS: list[Platform] = [
-    Platform.SENSOR,
-    Platform.BINARY_SENSOR#,
-    #Platform.SWITCH,
+    Platform.SENSOR  # ,
+    # Platform.BINARY_SENSOR,
+    # Platform.SWITCH,
 ]
 
 
-async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+async def async_setup(hass: HomeAssistant, _config: ConfigType) -> bool:
     """Set up the SAVS component and register static assets."""
+    integration_path = trio.Path(__file__).parent
+    images_path = trio.Path(integration_path) / "images"
 
-    integration_path = os.path.dirname(__file__)
-    images_path = os.path.join(integration_path, "images")
-
-    if os.path.isdir(images_path):
-        if hass.http:
-            # Use StaticPathConfig dataclass here
-            await hass.http.async_register_static_paths(
-                [StaticPathConfig("/local/savs", images_path)]
-            )
-
+    if await images_path.is_dir() and hass.http:
+        await hass.http.async_register_static_paths(
+            [StaticPathConfig("/local/savs", str(images_path))]
+        )
     return True
 
 
@@ -59,14 +56,14 @@ async def async_setup_entry(
         hass=hass,
         logger=LOGGER,
         name=DOMAIN,
-        update_interval=timedelta(hours=1),
+        update_interval=timedelta(seconds=5),
     )
     entry.runtime_data = SavsData(
         client=SavsApiClient(
             email=entry.data[CONF_EMAIL],
             password=entry.data[CONF_PASSWORD],
             session=async_get_clientsession(hass),
-            access_token=entry.data.get(CONF_TOKEN)
+            access_token=entry.data.get(CONF_TOKEN),
         ),
         integration=async_get_loaded_integration(hass, entry.domain),
         coordinator=coordinator,

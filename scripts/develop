@@ -10,6 +10,14 @@ if [[ ! -d "${PWD}/config" ]]; then
     hass --config "${PWD}/config" --script ensure_config
 fi
 
+# Append logger configuration to configuration.yaml if not already present
+CONFIG_FILE="${PWD}/config/configuration.yaml"
+LOGGER_CONFIG="logger:\n  default: warning\n  logs:\n    custom_components.savs: debug\n"
+
+if ! grep -q "custom_components.savs: debug" "${CONFIG_FILE}"; then
+    echo -e "\n${LOGGER_CONFIG}" >> "${CONFIG_FILE}"
+fi
+
 # Set the path to custom_components
 ## This let's us have the structure we want <root>/custom_components/savs
 ## while at the same time have Home Assistant configuration inside <root>/config
