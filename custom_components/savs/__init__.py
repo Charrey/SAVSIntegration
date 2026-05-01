@@ -7,10 +7,10 @@ https://github.com/Charrey/SAVSIntegration
 
 from __future__ import annotations
 
+import pathlib
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
-import trio
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_TOKEN, Platform
 from homeassistant.helpers import config_validation as cv
@@ -36,10 +36,14 @@ CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 async def async_setup(hass: HomeAssistant, _config: ConfigType) -> bool:
     """Set up the SAVS component and register static assets."""
-    integration_path = trio.Path(__file__).parent
-    images_path = trio.Path(integration_path) / "images"
+    integration_path = pathlib.Path(__file__).parent
+    images_path = integration_path / "images"
 
-    if await images_path.is_dir() and hass.http:
+    # Use hass.async_add_executor_job for blocking file operations
+    def check_dir() -> bool:
+        return images_path.is_dir()
+
+    if await hass.async_add_executor_job(check_dir) and hass.http:
         await hass.http.async_register_static_paths(
             [StaticPathConfig("/local/savs", str(images_path))]
         )

@@ -38,7 +38,8 @@ def _verify_response_or_raise(response: aiohttp.ClientResponse) -> None:
 class SavsApiClient:
     """SAVS API Client."""
 
-    BASEURL = "https://roundworm-hardhat-autism.ngrok-free.dev"  # temp alternative for https://global.wisualarm.com
+    # temp alternative for https://global.wisualarm.com
+    BASEURL = "https://roundworm-hardhat-autism.ngrok-free.dev/"
 
     def __init__(
         self,

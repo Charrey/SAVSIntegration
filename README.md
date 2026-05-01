@@ -1,46 +1,30 @@
-# Notice
+## Purpose
 
-The component and platforms in this repository are not meant to be used by a
-user, but as a "blueprint" that custom component developers can build
-upon, to make more awesome stuff.
+This is a Home Assistant integration for SAVS smoke detectors sold by Brandpreventiewinkel.nl. I've specifically aimed this at the SAVS G-10 gateway and the SAVS S10-W LinkSmart. These are whitelabel  products that you may recognize under other names like the WisuAlarm products WisuLink DHI-HY-GW01A (gateway) and WisuLink S05-R8-B (smoke alarm). The integration aims to allow you to make your smoke alarms sound/test on demand, and to run automations when a fire is detected.
 
-HAVE FUN! 😎
+## Methodology
 
-## Why?
+This integration functions two-fold:
 
-This is simple, by having custom_components look (README + structure) the same
-it is easier for developers to help each other and for users to start using them.
+- It uses cloud polling to obtain information about your devices, like connectivity status and battery level.
+- It uses Firebase to be immediately notified when an alarm event takes place (WORK IN PROGRESS)
 
-If you are a developer and you want to add things to this "blueprint" that you think more
-developers will have use for, please open a PR to add it :)
+## Sensors and services
 
-## What?
+- Sensor: gateway internet connectivity status
+- Sensor: Smoke alarm connectivity status
+- Sensor: Smoke alarm battery level
+- Sensor: Smoke alarm alarm status polled (CAN BE DELAYED)
+- Sensor: Most recent firebase alarm notification (IMMEDIATE) (WORK IN PROGRESS)
 
-This repository contains multiple files, here is a overview:
+## Setup
 
-File | Purpose | Documentation
--- | -- | --
-`.devcontainer.json` | Used for development/testing with Visual Studio Code. | [Documentation](https://code.visualstudio.com/docs/remote/containers)
-`.github/ISSUE_TEMPLATE/*.yml` | Templates for the issue tracker | [Documentation](https://help.github.com/en/github/building-a-strong-community/configuring-issue-templates-for-your-repository)
-`custom_components/savs/*` | Integration files, this is where everything happens. | [Documentation](https://developers.home-assistant.io/docs/creating_component_index)
-`CONTRIBUTING.md` | Guidelines on how to contribute. | [Documentation](https://help.github.com/en/github/building-a-strong-community/setting-guidelines-for-repository-contributors)
-`LICENSE` | The license file for the project. | [Documentation](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/licensing-a-repository)
-`README.md` | The file you are reading now, should contain info about the integration, installation and configuration instructions. | [Documentation](https://help.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax)
-`requirements.txt` | Python packages used for development/lint/testing this integration. | [Documentation](https://pip.pypa.io/en/stable/user_guide/#requirements-files)
+1. Setup your gateway and smoke alarms with the official app using an account.
+2. Add the component in this repository to custom_components 
+3. In Home Assistant search for the SAVS integration
+4. Enter the e-mail address and password of your SAVS account.
+5. The gateway and smoke alarms devices should be detected, and you can assign rooms to them.
 
-## How?
+## How to help
 
-1. Create a new repository in GitHub, using this repository as a template by clicking the "Use this template" button in the GitHub UI.
-1. Open your new repository in Visual Studio Code devcontainer (Preferably with the "`Dev Containers: Clone Repository in Named Container Volume...`" option).
-1. Rename all instances of the `integration_blueprint` to `custom_components/<your_integration_domain>` (e.g. `custom_components/awesome_integration`).
-1. Rename all instances of the `Integration Blueprint` to `<Your Integration Name>` (e.g. `Awesome Integration`).
-1. Run the `scripts/develop` to start HA and test out your new integration.
-
-## Next steps
-
-These are some next steps you may want to look into:
-- Add tests to your integration, [`pytest-homeassistant-custom-component`](https://github.com/MatthewFlamm/pytest-homeassistant-custom-component) can help you get started.
-- Add brand images (logo/icon).
-- Create your first release.
-- Share your integration on the [Home Assistant Forum](https://community.home-assistant.io/).
-- Submit your integration to [HACS](https://hacs.xyz/docs/publish/start).
+I'd appreciate it if you [reach out to me](mailto:savsintegration@proton.me) if you own other devices like this to experiment with or if you have experience with firebase notifications in home assistant. Issues and contributions are also welcome.
