@@ -1,6 +1,14 @@
+# IMPORTANT PART
+### Smoke alarms are very important for safety. This is a project that can fail at any time if the cloud API changes. Since it uses undocumented APIs, it could have adverse effects on the safety functions of your smoke alarms.
+### Do not depend on this integration for your safety. If you use smoke alarms that are connected to the internet, always combine them with dumb ones.
+### The owner of this repository takes no responsibility for harm caused by fires.
+# END OF IMPORTANT PART
+
+
+
 ## Purpose
 
-This is a Home Assistant integration for SAVS smoke detectors sold by Brandpreventiewinkel.nl. I've specifically aimed this at the SAVS G-10 gateway and the SAVS S10-W LinkSmart. These are whitelabel  products that you may recognize under other names like the WisuAlarm products WisuLink DHI-HY-GW01A (gateway) and WisuLink S05-R8-B (smoke alarm). The integration aims to allow you to make your smoke alarms sound/test on demand, and to run automations when a fire is detected.
+This is a Home Assistant integration for SAVS smoke detectors sold by [Brandpreventiewinkel.nl](https://www.brandpreventiewinkel.nl/). I've specifically aimed this at the [SAVS G-10 gateway](https://www.brandpreventiewinkel.nl/product/smart-home/savs-g10-base-station-gateway/) and the [SAVS S10-W LinkSmart](https://www.brandpreventiewinkel.nl/product/rookmelders/savs-s10-w-slimme-rookmelder-linksmart/). These are whitelabel  products that you may recognize under other names like the WisuAlarm products [WisuLink DHI-HY-GW01A](https://eu.wisualarm.com/products/wireless-gateway?_pos=2&_sid=18f444d24&_ss=r) (gateway) and [WisuLink S05-R8-B](https://eu.wisualarm.com/products/smoke-alarm-new-version) (smoke alarm). The integration aims to allow you to make your smoke alarms sound/test on demand, and to run automations when a fire is detected.
 
 ## Methodology
 
@@ -15,7 +23,7 @@ This integration functions two-fold:
 - Sensor: Smoke alarm connectivity status
 - Sensor: Smoke alarm battery level
 - Sensor: Smoke alarm alarm status polled (CAN BE DELAYED)
-- Sensor: Most recent firebase alarm notification (IMMEDIATE) (WORK IN PROGRESS)
+- Sensor: Most recent firebase alarm notification (IMMEDIATE) **(WORK IN PROGRESS)**
 
 ## Setup
 
