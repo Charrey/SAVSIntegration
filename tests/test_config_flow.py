@@ -211,9 +211,7 @@ async def test_unknown_error(
 
     with patch(
         "custom_components.savs.config_flow.SavsApiClient.test_credentials",
-        new=AsyncMock(
-            side_effect=SavsApiClientError("Unexpected API error")
-        ),
+        new=AsyncMock(side_effect=SavsApiClientError("Unexpected API error")),
     ):
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
