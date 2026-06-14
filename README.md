@@ -23,13 +23,18 @@ This means that (contrary to the official app which will immediately trigger a n
 - Sensor: Smoke alarm battery level
 - Sensor: Smoke alarm alarm status polled (CAN BE DELAYED)
 
+## Prerequisites
+
+- You have one of the SAVS gateways (i.e., SAVS G-10 gateway)
+- You have used the official SAVS app to create an account
+- You have added the device to your account using the SAVS app
+
 ## Setup
 
-1. Setup your gateway and smoke alarms with the official app using an account.
-2. Add the component in this repository to custom_components 
-3. In Home Assistant search for the SAVS integration
-4. Enter the e-mail address and password of your SAVS account.
-5. The gateway and smoke alarms devices should be detected, and you can assign rooms to them.
+1. Add the component in this repository to custom_components 
+2. In Home Assistant search for the SAVS integration
+3. Enter the e-mail address and password of your SAVS account.
+4. The gateway and smoke alarms devices should be detected, and you can assign rooms to them.
 
 ## How to help
 
