@@ -291,6 +291,20 @@ class SavsApiClient:
             msg = f"Error fetching devices - {exception}"
             raise SavsApiClientCommunicationError(msg) from exception
 
+    async def async_test_alarm(self, device_id: str) -> None:
+        """Send a test alarm order to the gateway."""
+        await self._api_wrapper(
+            method="post",
+            url=SavsApiClient.BASEURL + "/gateway/shadow/orderIssue",
+            data={
+                "deviceId": device_id,
+                "channelId": None,
+                "messageType": "service",
+                "orders": [{"propertyKey": "nodeTest", "propertyValue": "1"}],
+            },
+            headers=self._get_common_headers(),
+        )
+
     def _raise_auth_error(self, msg: str) -> None:
         raise SavsApiClientAuthenticationError(msg)
 

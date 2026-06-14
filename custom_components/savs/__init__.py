@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from .data import SavsConfigEntry
 
 
-PLATFORMS: list[Platform] = [Platform.SENSOR]
+PLATFORMS: list[Platform] = [Platform.BUTTON, Platform.SENSOR]
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
@@ -59,7 +59,7 @@ async def async_setup_entry(
         hass=hass,
         logger=LOGGER,
         name=DOMAIN,
-        update_interval=timedelta(seconds=5),
+        update_interval=timedelta(seconds=30),
     )
     entry.runtime_data = SavsData(
         client=SavsApiClient(

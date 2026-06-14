@@ -80,7 +80,7 @@ async def test_async_setup_entry_sets_up_sensor_platform(
     assert savs_config_entry.runtime_data.client is fake_client
     async_forward_entry_setups.assert_awaited_once_with(
         savs_config_entry,
-        [Platform.SENSOR],
+        [Platform.BUTTON, Platform.SENSOR],
     )
 
 
@@ -99,7 +99,7 @@ async def test_async_unload_entry_unloads_sensor_platform(
     assert result is True
     async_unload_platforms.assert_awaited_once_with(
         savs_config_entry,
-        [Platform.SENSOR],
+        [Platform.BUTTON, Platform.SENSOR],
     )
 
 
