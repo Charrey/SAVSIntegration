@@ -53,8 +53,9 @@ FIRE_DETECTED_DESCRIPTION = SensorEntityDescription(
 )
 
 
+# noinspection PyUnusedLocal
 async def async_setup_entry(
-    hass: HomeAssistant,
+    hass: HomeAssistant,  # noqa: ARG001
     entry: SavsConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
@@ -156,7 +157,7 @@ class SavsSensor(SavsEntity, SensorEntity):
             if not type_json:
                 return None
             return json.loads(type_json)
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             return None
 
     @classmethod
@@ -165,39 +166,56 @@ class SavsSensor(SavsEntity, SensorEntity):
     ) -> float | int | str | bool | None:
         """Extract and cast a property value from device data."""
         if key == "connectivity":
-            return cls._get_on_off_line_status(device_data.get("on_off_line_status"))
-
+            return cls._get_connectivity_value(device_data)
         if key == "fire_detected":
-            alarm_status = device_data.get("alarm_status")
-            if alarm_status is None:
-                return None
-            return alarm_status == 0
+            return cls._get_fire_detected_value(device_data)
+        return cls._get_sensor_property_value(device_data, key)
 
-        properties = device_data.get("properties", [])
-        identifier_map = {
+    @classmethod
+    def _get_connectivity_value(cls, device_data: dict[str, Any]) -> str | None:
+        """Extract connectivity sensor value."""
+        return cls._get_on_off_line_status(device_data.get("on_off_line_status"))
+
+    @classmethod
+    def _get_fire_detected_value(cls, device_data: dict[str, Any]) -> bool | None:
+        """Extract fire detected sensor value."""
+        alarm_status = device_data.get("alarm_status")
+        if alarm_status is None:
+            return None
+        return alarm_status == 0
+
+    @classmethod
+    def _get_sensor_property_value(
+        cls, device_data: dict[str, Any], key: str
+    ) -> float | int | str | None:
+        """Extract a value from a device property."""
+        property_identifier = {
             "battery": "batteryCapacity",
             "zigbee_signal": "ZigbeeSignalStrength",
-        }
-        identifier = identifier_map.get(key)
-        if not identifier:
+        }.get(key)
+        if not property_identifier:
             return None
 
-        for prop in properties:
-            if prop.get("propertyIdentifier") == identifier:
-                value = prop.get("propertyValue")
-                if value is None:
-                    return None
-                if key == "battery":
-                    return float(value)
-                if key == "zigbee_signal":
-                    # Parse propertyProtocol to get enum mapping
-                    enum_mapping = cls._parse_enum_protocol(
-                        prop.get("propertyProtocol")
-                    )
-                    if enum_mapping:
-                        # Convert value to string key for lookup
-                        return enum_mapping.get(str(value), str(value))
-                    return int(value)
+        for prop in device_data.get("properties", []):
+            if prop.get("propertyIdentifier") == property_identifier:
+                return cls._get_sensor_property_value_from_protocol(prop, key)
+        return None
+
+    @staticmethod
+    def _get_sensor_property_value_from_protocol(
+        prop: dict[str, Any], key: str
+    ) -> float | int | str | None:
+        """Extract and cast a value from a property protocol entry."""
+        value = prop.get("propertyValue")
+        if value is None:
+            return None
+        if key == "battery":
+            return float(value)
+        if key == "zigbee_signal":
+            enum_mapping = SavsSensor._parse_enum_protocol(prop.get("propertyProtocol"))
+            if enum_mapping:
+                return enum_mapping.get(str(value), str(value))
+            return int(value)
         return None
 
     @callback

@@ -43,7 +43,7 @@ class FakeCoordinator:
 
 def device_id_for(entity: SavsSensor) -> str:
     """Return the SAVS device id from an entity's device info."""
-    identifiers = cast(set[tuple[str, str]], entity.device_info["identifiers"])
+    identifiers = cast("set[tuple[str, str]]", entity.device_info["identifiers"])
     domain, device_id = next(iter(identifiers))
     assert domain == DOMAIN
     return device_id
@@ -72,9 +72,7 @@ def coordinator_devices(page_data: list[dict[str, Any]]) -> list[dict[str, Any]]
         )
         devices.extend(
             {
-                "device_id": (
-                    f"{sub_device['deviceId']}_{sub_device['subDeviceId']}"
-                ),
+                "device_id": (f"{sub_device['deviceId']}_{sub_device['subDeviceId']}"),
                 "name": sub_device["subDeviceName"],
                 "product_id": sub_device["subDeviceProductId"],
                 "product_sub_type": sub_device["subDeviceProductSubType"],
@@ -124,7 +122,7 @@ async def test_async_setup_entry_creates_expected_sensors(
 
     await async_setup_entry(
         hass=Mock(),
-        entry=cast(Any, savs_config_entry),
+        entry=cast("Any", savs_config_entry),
         async_add_entities=add_entities,
     )
 

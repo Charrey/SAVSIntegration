@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, Any
 from unittest.mock import Mock, patch
 
 import pytest
-from homeassistant import loader
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_TOKEN
 from pytest_homeassistant_custom_component.common import MockConfigEntry

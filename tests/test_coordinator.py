@@ -50,7 +50,7 @@ def coordinator_for_entry(
         update_interval=None,
     )
     entry.runtime_data = SavsData(
-        client=cast(Any, client),
+        client=cast("Any", client),
         coordinator=coordinator,
         integration=Mock(),
     )
