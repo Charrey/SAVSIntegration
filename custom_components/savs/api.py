@@ -87,13 +87,6 @@ class SavsApiClient:
         msg = "No access token received"
         raise SavsApiClientAuthenticationError(msg)
 
-    async def async_get_data(self) -> Any:
-        """Get data from the API."""
-        return await self._api_wrapper(
-            method="get",
-            url="https://jsonplaceholder.typicode.com/posts/1",
-        )
-
     def _get_common_headers(self) -> dict[str, str]:
         """Generate common headers for API requests."""
         timestamp = str(int(time.time() * 1000))
