@@ -117,14 +117,13 @@ class SavsSensor(SavsEntity, SensorEntity):
         super().__init__(coordinator, device_data)
 
         self.entity_description = description
-        device_name = device_data["name"]
 
         # Override the unique_id set by SavsEntity to include the sensor key,
         # and keep entry_id to avoid clashes if multiple accounts are added
         self._attr_unique_id = (
             f"{coordinator.config_entry.entry_id}_{self._device_id}_{description.key}"
         )
-        self._attr_name = f"{device_name} {description.name}"
+        self._attr_name = description.name
 
         # For enum sensors, set options dynamically from propertyProtocol
         if description.key == "zigbee_signal":

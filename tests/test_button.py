@@ -68,7 +68,7 @@ async def test_async_setup_entry_creates_gateway_node_test_button(
     assert len(added_entities) == 1
     button = added_entities[0]
     assert device_id_for(button) == GATEWAY_ID
-    assert button.name == "Draadloze gateway Node Test"
+    assert button.name == "Node Test"
     assert button.unique_id == "01HXSAVSTEST00000000000000_CB07EB7RDE3669E_node_test"
 
 

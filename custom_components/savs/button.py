@@ -66,7 +66,7 @@ class SavsGatewayNodeTestButton(SavsEntity, ButtonEntity):
         self._attr_unique_id = (
             f"{coordinator.config_entry.entry_id}_{self._device_id}_{description.key}"
         )
-        self._attr_name = f"{device_data['name']} {description.name}"
+        self._attr_name = description.name
 
     async def async_press(self) -> None:
         """Trigger a node test on the gateway."""
