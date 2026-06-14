@@ -12,10 +12,9 @@ This is a Home Assistant integration for SAVS smoke detectors sold by [Brandprev
 
 ## Methodology
 
-This integration functions two-fold:
+This integration uses cloud polling to obtain information about your devices, like connectivity status and battery level and fire alarm state.
 
-- It uses cloud polling to obtain information about your devices, like connectivity status and battery level.
-- It uses Firebase to be immediately notified when an alarm event takes place (WORK IN PROGRESS)
+This means that (contrary to the official app which will immediately trigger a notification/alarm on your phone) it can take up to 30 seconds for an update to be propagated to Home Assistant.  Unfortunately, it seems unlikely this desireable, immediate notification behavior can be reproduced without either soldering to the device and somehow obtaining root, or by having Home Assistant itself emulate an Android device capable of receiving notifications. 
 
 ## Sensors and services
 
@@ -23,7 +22,6 @@ This integration functions two-fold:
 - Sensor: Smoke alarm connectivity status
 - Sensor: Smoke alarm battery level
 - Sensor: Smoke alarm alarm status polled (CAN BE DELAYED)
-- Sensor: Most recent firebase alarm notification (IMMEDIATE) **(WORK IN PROGRESS)**
 
 ## Setup
 
@@ -35,4 +33,4 @@ This integration functions two-fold:
 
 ## How to help
 
-I'd appreciate it if you [reach out to me](mailto:savsintegration@proton.me) if you own other devices like this to experiment with or if you have experience with firebase notifications in home assistant. Issues and contributions are also welcome.
+I'd appreciate it if you [reach out to me](mailto:savsintegration@proton.me) if you own other devices like this to experiment with. Issues and contributions are also welcome.
