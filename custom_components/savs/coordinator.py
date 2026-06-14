@@ -4,11 +4,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import (
     SavsApiClientAuthenticationError,
+    SavsApiClientCommunicationError,
     SavsApiClientError,
 )
 
@@ -73,8 +74,10 @@ class SavsDataUpdateCoordinator(DataUpdateCoordinator):
 
         except SavsApiClientAuthenticationError as exception:
             raise ConfigEntryAuthFailed(exception) from exception
+        except SavsApiClientCommunicationError as exception:
+            raise ConfigEntryNotReady(exception) from exception
         except SavsApiClientError as exception:
             raise UpdateFailed(exception) from exception
         except Exception as err:
             msg = f"Error communicating with API: {err}"
-            raise UpdateFailed(msg) from err
+            raise ConfigEntryNotReady(msg) from err

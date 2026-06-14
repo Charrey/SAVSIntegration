@@ -8,11 +8,12 @@ from typing import TYPE_CHECKING, Any, cast
 from unittest.mock import AsyncMock, Mock
 
 import pytest
-from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import UpdateFailed
 
 from custom_components.savs.api import (
     SavsApiClientAuthenticationError,
+    SavsApiClientCommunicationError,
     SavsApiClientError,
 )
 from custom_components.savs.const import LOGGER
@@ -109,13 +110,25 @@ async def test_async_update_data_raises_update_failed_for_api_error(
         await coordinator._async_update_data()  # noqa: SLF001
 
 
-async def test_async_update_data_raises_update_failed_for_unexpected_error(
+async def test_async_update_data_raises_not_ready_for_communication_error(
     hass: HomeAssistant,
     savs_config_entry: MockConfigEntry,
 ) -> None:
-    """Test unexpected errors are raised as update failures."""
+    """Test communication errors are raised as config entry not ready."""
+    client = FakeClient(side_effect=SavsApiClientCommunicationError("Connection failed"))
+    coordinator = coordinator_for_entry(hass, savs_config_entry, client)
+
+    with pytest.raises(ConfigEntryNotReady):
+        await coordinator._async_update_data()  # noqa: SLF001
+
+
+async def test_async_update_data_raises_not_ready_for_unexpected_error(
+    hass: HomeAssistant,
+    savs_config_entry: MockConfigEntry,
+) -> None:
+    """Test unexpected errors are raised as config entry not ready."""
     client = FakeClient(side_effect=RuntimeError("Unexpected failure"))
     coordinator = coordinator_for_entry(hass, savs_config_entry, client)
 
-    with pytest.raises(UpdateFailed):
+    with pytest.raises(ConfigEntryNotReady):
         await coordinator._async_update_data()  # noqa: SLF001
