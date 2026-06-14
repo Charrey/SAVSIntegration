@@ -39,7 +39,7 @@ class SavsApiClient:
     """SAVS API Client."""
 
     # temp alternative for https://global.wisualarm.com
-    BASEURL = "https://roundworm-hardhat-autism.ngrok-free.dev/"
+    BASEURL = "https://global.wisualarm.com/"
 
     def __init__(
         self,

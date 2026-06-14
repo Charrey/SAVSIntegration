@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "code": "0",
+  "errMsg": "",
+  "data": {
+    "access_token": "9bf982d1-c314-467e-b031-3a9cc53a3922",
+    "token_type": "bearer",
+    "scope": "ui",
+    "username": "s7P9A0",
+    "userId": 29494,
+    "companyId": 20833
+  }
+}
