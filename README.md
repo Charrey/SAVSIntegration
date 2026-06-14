@@ -36,6 +36,10 @@ This means that (contrary to the official app which will immediately trigger a n
 3. Enter the e-mail address and password of your SAVS account.
 4. The gateway and smoke alarms devices should be detected, and you can assign rooms to them.
 
+## Removing the integration
+
+This integration follows standard integration removal. No extra steps are required.
+
 ## How to help
 
 I'd appreciate it if you [reach out to me](mailto:savsintegration@proton.me) if you own other devices like this to experiment with. Issues and contributions are also welcome.
