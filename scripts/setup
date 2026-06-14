@@ -5,3 +5,9 @@ set -e
 cd "$(dirname "$0")/.."
 
 python3 -m pip install --requirement requirements.txt
+
+# Link the integration into the pytest-homeassistant-custom-component test config
+# so that the HA loader can discover it during config-flow tests.
+TESTING_CONFIG=".venv/lib/python3.14/site-packages/pytest_homeassistant_custom_component/testing_config/custom_components"
+mkdir -p "$TESTING_CONFIG"
+ln -sfn "$(pwd)/custom_components/savs" "$TESTING_CONFIG/savs"

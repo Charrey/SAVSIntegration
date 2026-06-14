@@ -1,0 +1,151 @@
+{
+  "success": true,
+  "code": "0",
+  "errMsg": null,
+  "data": {
+    "pageData": [
+      {
+        "deviceId": "CB07EB7RDE3669E",
+        "subDeviceId": null,
+        "name": "Draadloze gateway",
+        "productId": "MYVMQXD5",
+        "productCategory": "1002",
+        "productType": "2004",
+        "productSubType": "20041",
+        "alarmStatus": 1,
+        "faultStatus": 1,
+        "onOffLineStatus": 1,
+        "deviceOnlineStatus": null,
+        "relation": 0,
+        "picUrl": "https://hxcloud-bucket-germany.oss-eu-central-1.aliyuncs.com/20240417/4384e21e-b3c1-4a03-a2e8-80ab632ed63b.png",
+        "properties": [
+          {
+            "propertyRef": "23009",
+            "propertyIdentifier": "wifiSignalStrength",
+            "propertyName": "WIFI Signal Strength",
+            "propertyValue": 4,
+            "propertyUnit": null,
+            "propertyUnitName": null,
+            "propertyProtocol": "{\"typeJson\":\"{\\\"0\\\":\\\"Abnormal\\\",\\\"1\\\":\\\"Poor\\\",\\\"2\\\":\\\"Average\\\",\\\"3\\\":\\\"Good\\\",\\\"4\\\":\\\"Wired\\\"}\",\"type\":\"enum\"}"
+          }
+        ],
+        "subDeviceList": [
+          {
+            "deviceId": "CB07EB7RDE3669E",
+            "subDeviceId": "BM0A6E6PDE91F77",
+            "subDeviceProductId": "2WSJFZVQ",
+            "subDeviceProductSubType": "20042",
+            "subDeviceName": "Rookmelder boven",
+            "subDeviceModel": "S10-W",
+            "alarmStatus": 1,
+            "faultStatus": 1,
+            "onOffLineStatus": 1,
+            "picUrl": "https://hxcloud-bucket-germany.oss-eu-central-1.aliyuncs.com/20240417/7a53c154-a89a-468e-bf33-87910705a2f3.png",
+            "roomId": 10908,
+            "roomName": "Boven",
+            "properties": [
+              {
+                "propertyRef": "10101",
+                "propertyIdentifier": "batteryCapacity",
+                "propertyName": "Battery Level",
+                "propertyValue": "100.0",
+                "propertyUnit": "%",
+                "propertyUnitName": "百分比",
+                "propertyProtocol": null
+              },
+              {
+                "propertyRef": "23059",
+                "propertyIdentifier": "ZigbeeSignalStrength",
+                "propertyName": "Signal Strength",
+                "propertyValue": 1,
+                "propertyUnit": null,
+                "propertyUnitName": null,
+                "propertyProtocol": "{\"typeJson\":\"{\\\"1\\\":\\\"Good\\\",\\\"2\\\":\\\"Average\\\",\\\"3\\\":\\\"Poor\\\",\\\"4\\\":\\\"Abnormal\\\",\\\"5\\\":\\\"Not loaded\\\"}\",\"type\":\"enum\"}"
+              }
+            ]
+          },
+          {
+            "deviceId": "CB07EB7RDE3669E",
+            "subDeviceId": "BM0A6E6PDE310C0",
+            "subDeviceProductId": "2WSJFZVQ",
+            "subDeviceProductSubType": "20042",
+            "subDeviceName": "Rookmelder woonkamer",
+            "subDeviceModel": "S10-W",
+            "alarmStatus": 1,
+            "faultStatus": 1,
+            "onOffLineStatus": 1,
+            "picUrl": "https://hxcloud-bucket-germany.oss-eu-central-1.aliyuncs.com/20240417/7a53c154-a89a-468e-bf33-87910705a2f3.png",
+            "roomId": 10909,
+            "roomName": "Woonkamer",
+            "properties": [
+              {
+                "propertyRef": "10101",
+                "propertyIdentifier": "batteryCapacity",
+                "propertyName": "Battery Level",
+                "propertyValue": "100.0",
+                "propertyUnit": "%",
+                "propertyUnitName": "百分比",
+                "propertyProtocol": null
+              },
+              {
+                "propertyRef": "23059",
+                "propertyIdentifier": "ZigbeeSignalStrength",
+                "propertyName": "Signal Strength",
+                "propertyValue": 1,
+                "propertyUnit": null,
+                "propertyUnitName": null,
+                "propertyProtocol": "{\"typeJson\":\"{\\\"1\\\":\\\"Good\\\",\\\"2\\\":\\\"Average\\\",\\\"3\\\":\\\"Poor\\\",\\\"4\\\":\\\"Abnormal\\\",\\\"5\\\":\\\"Not loaded\\\"}\",\"type\":\"enum\"}"
+              }
+            ]
+          },
+          {
+            "deviceId": "CB07EB7RDE3669E",
+            "subDeviceId": "BM0A6E6PDEF1C13",
+            "subDeviceProductId": "2WSJFZVQ",
+            "subDeviceProductSubType": "20042",
+            "subDeviceName": "Rookmelder Fietsenschuur",
+            "subDeviceModel": "S10-W",
+            "alarmStatus": 1,
+            "faultStatus": 1,
+            "onOffLineStatus": 1,
+            "picUrl": "https://hxcloud-bucket-germany.oss-eu-central-1.aliyuncs.com/20240417/7a53c154-a89a-468e-bf33-87910705a2f3.png",
+            "roomId": 10910,
+            "roomName": "Fietsenschuur",
+            "properties": [
+              {
+                "propertyRef": "10101",
+                "propertyIdentifier": "batteryCapacity",
+                "propertyName": "Battery Level",
+                "propertyValue": "100.0",
+                "propertyUnit": "%",
+                "propertyUnitName": "百分比",
+                "propertyProtocol": null
+              },
+              {
+                "propertyRef": "23059",
+                "propertyIdentifier": "ZigbeeSignalStrength",
+                "propertyName": "Signal Strength",
+                "propertyValue": 1,
+                "propertyUnit": null,
+                "propertyUnitName": null,
+                "propertyProtocol": "{\"typeJson\":\"{\\\"1\\\":\\\"Good\\\",\\\"2\\\":\\\"Average\\\",\\\"3\\\":\\\"Poor\\\",\\\"4\\\":\\\"Abnormal\\\",\\\"5\\\":\\\"Not loaded\\\"}\",\"type\":\"enum\"}"
+              }
+            ]
+          }
+        ],
+        "channelList": null,
+        "isFire": 1,
+        "roomId": 0,
+        "roomName": "全部",
+        "companyId": 20833,
+        "userId": 29494,
+        "sharerCompanyId": null,
+        "sharerUserId": null
+      }
+    ],
+    "currentPage": 1,
+    "totalPage": 1,
+    "pageSize": 30,
+    "totalRows": 1
+  }
+}
