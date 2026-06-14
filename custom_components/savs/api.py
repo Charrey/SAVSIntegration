@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import hmac
 import socket
@@ -10,7 +11,6 @@ from http import HTTPStatus
 from typing import Any, NoReturn
 
 import aiohttp
-import async_timeout
 
 from .const import LOGGER
 
@@ -310,7 +310,7 @@ class SavsApiClient:
             if self._access_token:
                 request_headers["Authorization"] = f"Bearer {self._access_token}"
             try:
-                async with async_timeout.timeout(10):
+                async with asyncio.timeout(10):
                     response = await self._session.request(
                         method=method,
                         url=url,
